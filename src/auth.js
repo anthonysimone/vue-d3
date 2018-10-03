@@ -1,15 +1,7 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import firebaseui from 'firebaseui'
-
-const config = {
-  apiKey: 'AIzaSyDx20tLC66Q91N7T5MfrOfp5Jq-DVCpqfI',
-  authDomain: 'vue-d3-project.firebaseapp.com',
-  databaseURL: 'https://vue-d3-project.firebaseio.com',
-  projectId: 'vue-d3-project',
-  storageBucket: 'vue-d3-project.appspot.com',
-  messagingSenderId: '716579756694'
-}
+import db from '@/main'
 
 const auth = {
   context: null,
@@ -19,7 +11,6 @@ const auth = {
   init (context) {
     this.context = context
 
-    firebase.initializeApp(config)
     this.uiConfig = {
       signInSuccessUrl: 'dashboard',
       // signInFlow: 'popup',
@@ -30,9 +21,25 @@ const auth = {
       ]
     }
     this.ui = new firebaseui.auth.AuthUI(firebase.auth())
-
     firebase.auth().onAuthStateChanged((user) => {
-      console.log('auth state change')
+      if (user) {
+        // @TODO: create new user in firestore
+        db.collection('users').doc(user.uid).get().then((querySnapshot) => {
+          if (!querySnapshot.exists) {
+            db.collection('users').doc(user.uid).set({
+              firstname: 'test',
+              lastname: 'test',
+              email: 'test@test.com'
+            })
+              .then(function (docRef) {
+                console.log('Document written with ID: ', docRef.id)
+              })
+              .catch(function (error) {
+                console.error('Error adding document: ', error)
+              })
+          }
+        })
+      }
       this.context.$store.dispatch('user/setCurrentUser')
 
       let requireAuth = this.context.$route.matched.some(record => record.meta.requireAuth)
@@ -50,6 +57,9 @@ const auth = {
   },
   logout () {
     return firebase.auth().signOut()
+  },
+  isNewUser (user) {
+    return user.metadata.creationTime === user.metadata.lastSignInTime
   }
 }
 

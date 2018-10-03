@@ -19,7 +19,6 @@ import auth from '@/auth'
 
 export default {
   data () {
-    console.log(this.$store.state)
     return {
       user: this.$store.state.user
     }
