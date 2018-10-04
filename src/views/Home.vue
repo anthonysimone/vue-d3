@@ -1,17 +1,21 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
+    <page-header pageTitle="Visualize Your Data" subTitle="A tool to help you get started visualizing your data on the web with D3"></page-header>
+    <section class="section">
+      <div class="container">
+        <img alt="Vue logo" src="../assets/logo.png">
+      </div>
+    </section>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import GoogleSigninButton from '@/components/GoogleSigninButton.vue'
+import PageHeader from '@/components/elements/layout/PageHeader'
 
 export default {
   name: 'home',
   components: {
-    GoogleSigninButton
+    PageHeader
   }
 }
 </script>

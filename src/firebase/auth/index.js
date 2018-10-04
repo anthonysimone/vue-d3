@@ -1,7 +1,7 @@
 import * as firebase from 'firebase/app'
 import 'firebase/auth'
 import firebaseui from 'firebaseui'
-import db from '@/main'
+import { db } from '@/firebase/firestore/index'
 
 const auth = {
   context: null,
@@ -13,7 +13,7 @@ const auth = {
 
     this.uiConfig = {
       signInSuccessUrl: 'dashboard',
-      // signInFlow: 'popup',
+      signInFlow: 'popup',
       signInOptions: [
         firebase.auth.GithubAuthProvider.PROVIDER_ID,
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,
@@ -22,30 +22,39 @@ const auth = {
     }
     this.ui = new firebaseui.auth.AuthUI(firebase.auth())
     firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // @TODO: create new user in firestore
+      if (user && this.isNewUser(user)) {
         db.collection('users').doc(user.uid).get().then((querySnapshot) => {
           if (!querySnapshot.exists) {
-            db.collection('users').doc(user.uid).set({
-              firstname: 'test',
-              lastname: 'test',
-              email: 'test@test.com'
-            })
+            let userProfile = {
+              firstname: user.displayName.split(' ')[0],
+              lastname: user.displayName.split(' ')[1] || '',
+              email: user.email,
+              photoUrl: user.photoURL
+            }
+            db.collection('users').doc(user.uid).set(userProfile)
               .then(function (docRef) {
-                console.log('Document written with ID: ', docRef.id)
+                console.log('Document written')
+                console.log(docRef)
+                this.context.$store.dispatch('user/setCurrentUserProfile', userProfile)
               })
               .catch(function (error) {
                 console.error('Error adding document: ', error)
               })
           }
         })
+      } else if (user) {
+        db.collection('users').doc(user.uid).get().then((querySnapshot) => {
+          if (querySnapshot.exists) {
+            this.context.$store.dispatch('user/setCurrentUserProfile', querySnapshot.data())
+          }
+        })
       }
       this.context.$store.dispatch('user/setCurrentUser')
 
-      let requireAuth = this.context.$route.matched.some(record => record.meta.requireAuth)
+      let requireAuth = this.context.$route.matched.some(record => record.meta.requiresAuth)
       let guestOnly = this.context.$route.matched.some(record => record.meta.guestOnly)
 
-      if (requireAuth && !user) this.context.$router.push({ name: 'signIn' })
+      if (requireAuth && !user) this.context.$router.push({ name: 'sign-in' })
       else if (guestOnly && user) this.context.$router.push({ name: 'dashboard' })
     })
   },

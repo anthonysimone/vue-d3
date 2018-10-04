@@ -1,5 +1,16 @@
 <template>
   <div class="dashboard">
-    <h1>This is your dashboard.</h1>
+    <page-header pageTitle="Dashboard" subTitle="This is your dashboard!"></page-header>
   </div>
 </template>
+
+<script>
+import PageHeader from '@/components/elements/layout/PageHeader'
+
+export default {
+  name: 'dashboard',
+  components: {
+    PageHeader
+  }
+}
+</script>

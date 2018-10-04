@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-import auth from '@/auth'
+import auth from '@/firebase/auth/index'
 
 Vue.use(Router)
 
@@ -24,13 +24,16 @@ export const router = new Router({
     },
     {
       path: '/sign-in',
-      name: 'signIn',
+      name: 'sign-in',
       component: () => import('./views/SignIn.vue')
     },
     {
-      path: '/sign-up',
-      name: 'signUp',
-      component: () => import('./views/SignUp.vue')
+      path: '/edit-profile',
+      name: 'edit-profile',
+      component: () => import('./views/EditProfile.vue'),
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/404',
