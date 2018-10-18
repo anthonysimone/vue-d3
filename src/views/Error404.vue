@@ -1,11 +1,11 @@
 <template>
   <div class="error-404">
     <page-header pageTitle="404" subTitle="The page you are looking for does not exist!"></page-header>
-    <section class="section">
-      <div class="container">
+    <div class="container">
+      <section class="section">
         <p class="emoji-404">&#x1f62e;</p>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 

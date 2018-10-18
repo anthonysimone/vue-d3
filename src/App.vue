@@ -28,8 +28,9 @@
                   <div class="dropdown-menu" id="dropdown-menu" role="menu">
                     <div class="dropdown-content">
                       <router-link class="dropdown-item" :to="{ name: 'dashboard' }">Dashboard</router-link>
-                      <router-link class="dropdown-item" :to="{ name: 'edit-profile' }">Edit Profile</router-link>
+                      <router-link class="dropdown-item" :to="{ name: 'add-visualization' }">Add</router-link>
                       <hr class="dropdown-divider">
+                      <router-link class="dropdown-item" :to="{ name: 'edit-profile' }">Edit Profile</router-link>
                       <a class="dropdown-item" @click.prevent="logout">Logout</a>
                     </div>
                   </div>
@@ -43,6 +44,14 @@
     <!-- end header and menu -->
 
     <router-view/>
+
+    <footer class="footer hero is-primary is-small">
+      <div class="container">
+        <p>D3 Helper, <a href="https://github.com/anthonysimone/vue-d3" target="_blank">view the project</a> on Github!</p>
+      </div>
+    </footer>
+
+    <v-dialog></v-dialog>
   </div>
 </template>
 
@@ -64,10 +73,6 @@ export default {
   methods: {
     logout () {
       auth.logout()
-      // .then(() => {
-      //   this.$router.replace({name: 'home'});
-      // });
-      // this.$router.push({name: 'home'});
     },
     toggleMenu () {
       this.menuIsActive = !this.menuIsActive
@@ -99,5 +104,9 @@ export default {
 .tiny-button-avatar {
   background-size: cover;
   border-radius: 100%;
+}
+footer.footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 </style>

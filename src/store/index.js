@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import createPersistedState from 'vuex-persistedstate'
 
 import user from './modules/user'
+import visualization from './modules/visualization'
 
 Vue.use(Vuex)
 
@@ -12,7 +13,7 @@ export default new Vuex.Store({
   },
   plugins: [createPersistedState({
     key: 'vuex-d3',
-    paths: ['user']
+    paths: ['user', 'visualization']
   })],
   mutations: {
 
@@ -21,6 +22,7 @@ export default new Vuex.Store({
 
   },
   modules: {
-    user
+    user,
+    visualization
   }
 })

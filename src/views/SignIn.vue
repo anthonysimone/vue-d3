@@ -1,11 +1,11 @@
 <template>
   <div class="about">
     <page-header pageTitle="Sign In" subTitle="Choose your sign in method. If you do not yet have an account, you can choose a method below to create one!"></page-header>
-    <section class="section">
-      <div class="container">
+    <div class="container">
+      <section class="section">
         <div id="firebaseui-auth-container"></div>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 

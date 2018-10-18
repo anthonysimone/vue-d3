@@ -5,9 +5,11 @@ import store from '@/store'
 import auth from '@/firebase/auth/index'
 import '@/firebase/firestore/index'
 import VueFire from 'vuefire'
+import VModal from 'vue-js-modal'
 
 Vue.config.productionTip = false
 Vue.use(VueFire)
+Vue.use(VModal, { dialog: true, dynamic: true })
 
 new Vue({
   router,

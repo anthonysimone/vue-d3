@@ -1,8 +1,8 @@
 <template>
   <div class="edit-profile">
     <page-header pageTitle="Edit Profile"></page-header>
-    <section class="section">
-      <div class="container">
+    <div class="container">
+      <section class="section">
         <h2 class="title is-3">Edit your profile information below</h2>
         <form @submit.prevent="updateProfile" @change="updateChangedStatus">
           <div class="columns">
@@ -43,9 +43,11 @@
                 </div>
                 <div :class="['profile-photos', { 'testing-photo' : testPhotoUrl }]">
                   <div class="profile-photo current-photo">
+                    <label class="label">Current</label>
                     <div class="profile-avatar" :style="{ backgroundImage: 'url(' + userProfile.photoUrl + ')'}"></div>
                   </div>
                   <div class="profile-photo new-photo" v-if="testPhotoUrl">
+                    <label class="label">New</label>
                     <div class="profile-avatar" :style="{ backgroundImage: 'url(' + testPhotoUrl + ')'}"></div>
                   </div>
                 </div>
@@ -55,15 +57,15 @@
           <button :class="['button', 'is-primary', { 'is-loading' : isLoading}]">Update Profile</button>
           <p class="help is-danger" v-show="isChanged">You have unsaved changes, make sure to save your updates if you would like to keep them!</p>
         </form>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
 import auth from '@/firebase/auth/index'
-import { db } from '@/firebase/firestore/index'
+import Users from '@/firebase/firestore/Users'
 import PageHeader from '@/components/elements/layout/PageHeader'
 
 export default {
@@ -91,12 +93,12 @@ export default {
   methods: {
     updateProfile () {
       this.isLoading = true
-      let profileRef = db.collection('users').doc(auth.user().uid)
-      profileRef.set({
+      let userProfile = {
         firstname: this.currentValues.firstname,
         lastname: this.currentValues.lastname,
         photoUrl: this.currentValues.photoUrl
-      }, { merge: true }).then(() => {
+      }
+      Users.setUser(auth.user().uid, userProfile, { merge: true }).then(() => {
         this.isLoading = false
         this.$store.dispatch('user/updateCurrentUserProfile', this.currentValues)
         this.updateChangedStatus()

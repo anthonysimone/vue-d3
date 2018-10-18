@@ -23,6 +23,14 @@ export const router = new Router({
       }
     },
     {
+      path: '/visualizations/:id',
+      name: 'visualization-detail',
+      component: () => import('./views/VisualizationDetail.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
       path: '/sign-in',
       name: 'sign-in',
       component: () => import('./views/SignIn.vue')
@@ -31,6 +39,14 @@ export const router = new Router({
       path: '/edit-profile',
       name: 'edit-profile',
       component: () => import('./views/EditProfile.vue'),
+      meta: {
+        requiresAuth: true
+      }
+    },
+    {
+      path: '/add',
+      name: 'add-visualization',
+      component: () => import('./views/AddVisualization.vue'),
       meta: {
         requiresAuth: true
       }
