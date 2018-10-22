@@ -23,7 +23,7 @@
 import { mapGetters } from 'vuex'
 import PageHeader from '@/components/elements/layout/PageHeader'
 import visTypes from '@/store/static/visualizationTypes'
-import testData from '@/store/static/d3-models/allDataModels'
+// import testData from '@/store/static/d3-models/allDataModels'
 
 // Import all possible D3 display and edit templates
 import TestVisualization from '@/components/d3/TestVisualization'
@@ -76,11 +76,11 @@ export default {
   },
   created () {
     // Use mock data
-    let dataKey = this.visDisplayComponentName.charAt(0).toLowerCase() + this.visDisplayComponentName.slice(1) + 'Data'
-    this.visData = testData[dataKey]
+    // let dataKey = this.visDisplayComponentName.charAt(0).toLowerCase() + this.visDisplayComponentName.slice(1) + 'Data'
+    // this.visData = testData[dataKey]
 
     // Use real data
-    // this.visData = this.visualization.data
+    this.visData = this.visualization.data
   }
 }
 </script>
