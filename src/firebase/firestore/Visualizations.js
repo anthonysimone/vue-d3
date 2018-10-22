@@ -8,6 +8,9 @@ export default {
   addVisualization (visualization) {
     return this.visualizations.add(visualization)
   },
+  updateVisualization (id, dataToUpdate) {
+    return this.visualizations.doc(id).update(dataToUpdate)
+  },
   deleteVisualization (id) {
     return this.visualizations.doc(id).delete()
   }

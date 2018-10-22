@@ -1,7 +1,9 @@
 <template>
   <div class="pie-chart">
     <p>The template to view the pie chart visualization.</p>
-    <svg viewBox="0 0 500 500"></svg>
+    <div class="vis">
+      <svg viewBox="0 0 500 500"></svg>
+    </div>
   </div>
 </template>
 
@@ -13,56 +15,106 @@ export default {
   props: {
     data: { default: null, required: true, type: Array }
   },
+  data () {
+    return {
+      container: null,
+      svg: null,
+      canvas: null,
+      width: 500,
+      height: 500,
+      d3Local: d3.local()
+    }
+  },
+  computed: {
+    colorScale () {
+      // return an ordinal color scale based on all values provided
+      return d3.scaleOrdinal(this.data.map(item => item.color))
+    },
+    total () {
+      return d3.sum(this.data, (d) => d.value)
+    },
+    radius () {
+      return Math.min(this.width, this.height) / 2
+    },
+    pie () {
+      return d3.pie()
+        .sort(null)
+        .value(d => d.value)
+    },
+    arc () {
+      return d3.arc()
+        .outerRadius(this.radius - 10)
+        .innerRadius(0)
+    },
+    label () {
+      return d3.arc()
+        .outerRadius(this.radius - 100)
+        .innerRadius(this.radius - 100)
+    }
+  },
+  methods: {
+    init () {
+      this.container = d3.select('.vis')
+      this.svg = d3.select('svg')
+      this.canvas = this.svg.append('g').attr('transform', 'translate(' + this.width / 2 + ',' + this.height / 2 + ')')
+    },
+    arcTween (d, index, nodes) {
+      let i = d3.interpolate(this.d3Local.get(nodes[index]), d)
+      this._current = i(0)
+      return (t) => {
+        return this.arc(i(t))
+      }
+    },
 
+    draw () {
+      // data format is expected to be like `@/store/static/d3-models/pieChart`
+
+      console.log('drawing')
+
+      // Get percentage for each item
+      this.data.forEach((d) => {
+        d.percentage = Math.floor(d.value / this.total * 100)
+      })
+
+      // join
+      let arcs = this.canvas.selectAll('.arc')
+        .data(this.pie(this.data))
+
+      // update
+      arcs.select('path')
+        .transition().duration(7500).attrTween('d', this.arcTween)
+      // arcs.select('text')
+      //   .transition().duration(7500)
+      //     .attr('transform', d => 'translate(' + this.label.centroid(d) + ')')
+      //     .attr('dy', '0.35em')
+      //     .text(d => d.data.percentage + '%')
+
+      // enter
+      arcs.enter()
+        .append('g')
+        .attr('class', 'arc')
+        .append('path')
+        .attr('fill', d => this.colorScale(d.data.value))
+        .attr('d', this.arc)
+        .each((d, i, nodes) => {
+          // store the current data set on the node for access in the tween
+          this.d3Local.set(nodes[i], d)
+        })
+
+      // arcs.enter().append('text')
+      //   .attr('transform', d => 'translate(' + this.label.centroid(d) + ')')
+      //   .attr('dy', '0.35em')
+      //   .text(d => d.data.percentage + '%')
+    }
+  },
   mounted () {
-    // data format is expected to be like `@/store/static/d3-models/pieChart`
-    let data = this.data
-
-    // Get total and percentage for each item
-    let total = d3.sum(data, (d) => d.value)
-    data.forEach((d) => {
-      d.percentage = Math.floor(d.value / total * 100)
-    })
-
-    // get the array of colors from our data object
-    let colors = data.map(item => item.color)
-
-    // Do initial d3 canvas setup
-    let svg = d3.select('svg')
-    let width = 500
-    let height = 500
-    let radius = Math.min(width, height) / 2
-    let g = svg.append('g').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')')
-
-    // define color scale from color array
-    let color = d3.scaleOrdinal(colors)
-
-    // define the pie function
-    let pie = d3.pie()
-      .sort(null)
-      .value(function (d) { return d.value })
-
-    let path = d3.arc()
-      .outerRadius(radius - 10)
-      .innerRadius(0)
-
-    let label = d3.arc()
-      .outerRadius(radius - 100)
-      .innerRadius(radius - 100)
-
-    let arc = g.selectAll('.arc')
-      .data(pie(data))
-      .enter().append('g')
-      .attr('class', 'arc')
-
-    arc.append('path')
-      .attr('d', path)
-      .attr('fill', function (d) { return color(d.data.value) })
-
-    arc.append('text')
-      .attr('transform', function (d) { return 'translate(' + label.centroid(d) + ')' })
-      .attr('dy', '0.35em')
-      .text(function (d) { return d.data.percentage + '%' })
+    this.init()
+    this.draw()
+  },
+  watch: {
+    data (newData, oldData) {
+      this.draw()
+    }
   }
 }
 </script>

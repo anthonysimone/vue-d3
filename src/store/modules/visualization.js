@@ -16,8 +16,8 @@ const mutations = {
   addVisualization: (state, visualization) => {
     state.visualizationsByUser.push(visualization)
   },
-  setCurrentVisualization: (state, visualization) => {
-    state.currentVisualization = visualization
+  updateVisualization: (state, { itemToUpdate, dataToUpdate }) => {
+    Object.assign(itemToUpdate, dataToUpdate)
   },
   deleteVisualization: (state, id) => {
     let index = state.visualizationsByUser.map(vis => vis.id).indexOf(id)
@@ -49,6 +49,19 @@ const actions = {
         })
     })
   },
+  updateVisualization: ({ commit, getters }, { id, dataToUpdate }) => {
+    return new Promise(() => {
+      Visualizations.updateVisualization(id, dataToUpdate).then(() => {
+        // success, we pass the item to update as well as the updates themselves to the mutation
+        commit('updateVisualization', {
+          itemToUpdate: getters.visualizationById(id),
+          dataToUpdate
+        })
+      }).catch((error) => {
+        console.log('Error updating document: ', error)
+      })
+    })
+  },
   deleteVisualization: ({ commit }, id) => {
     return new Promise((resolve, reject) => {
       Visualizations.deleteVisualization(id).then(() => {
@@ -59,11 +72,6 @@ const actions = {
       })
     })
   }
-  // setCurrentVisualization: ({ commit }, id) => {
-  //   let vis = this.visualizationsByUser.find(vis => vis.id === id)
-  //   console.log(vis);
-  //   // commit('setCurrentVisualization', id)
-  // }
 }
 
 export default {
