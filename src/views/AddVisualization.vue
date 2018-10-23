@@ -50,7 +50,8 @@ export default {
       newVisualization: {
         name: '',
         type: 'test',
-        createdBy: ''
+        createdBy: '',
+        data: []
       },
       formIsDisabled: true,
       waitingForResponse: false

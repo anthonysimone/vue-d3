@@ -57,10 +57,14 @@ export default {
         .attr('r', 0)
         .attr('opacity', 0.7)
         .attr('fill', '#ffffff')
-        .attr('r', (d) => d)
         .attr('fill', (d) => this.colorScale(d))
+        .attr('r', 0)
+        .attr('cx', (d) => this.width / 2)
+        .attr('cy', (d) => this.height / 2)
+        .transition().duration(2000)
         .attr('cx', (d) => (Math.floor(Math.random() * (this.width - 2 * d))) + d)
         .attr('cy', (d) => (Math.floor(Math.random() * (this.height - 2 * d))) + d)
+        .attr('r', (d) => d)
 
       // exit, these actions will be applied to elements that have been removed
       circlesBound
