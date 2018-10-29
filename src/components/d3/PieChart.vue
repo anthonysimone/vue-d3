@@ -1,8 +1,21 @@
 <template>
   <div class="pie-chart">
-    <p>The template to view the pie chart visualization.</p>
     <div class="vis">
-      <svg viewBox="0 0 500 500"></svg>
+      <div class="select-container">
+        <div class="select" v-if="this.data.length > 1">
+          <select class="select" v-model.number="currentIndex">
+            <option v-for="(set, index) in this.data"
+              :selected="index === 0"
+              :key="set.setId"
+              :value="set.setId">
+              {{ set.setName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="vis-svg">
+        <svg viewBox="0 0 500 500"></svg>
+      </div>
     </div>
   </div>
 </template>
@@ -10,6 +23,7 @@
 <script>
 // TODO: refactor this to only use the appropriate modules
 import * as d3 from 'd3'
+// import pieChartModel from '@/store/static/d3-models/pieChartData'
 
 export default {
   props: {
@@ -22,16 +36,20 @@ export default {
       canvas: null,
       width: 500,
       height: 500,
+      currentIndex: 1,
       d3Local: d3.local()
     }
   },
   computed: {
+    // TODO: account for uneven sets, OR make that a validation process in data entry
+    currentData () {
+      return this.data[this.data.findIndex(item => item.setId === this.currentIndex)]
+      // let usableData = pieChartModel.transformToUsable(this.data);
+      // return usableData[usableData.findIndex(item => item.setId === this.currentIndex)]
+    },
     colorScale () {
       // return an ordinal color scale based on all values provided
-      return d3.scaleOrdinal(this.data.map(item => item.color))
-    },
-    total () {
-      return d3.sum(this.data, (d) => d.value)
+      return d3.scaleOrdinal(this.currentData.values.map(item => item.color))
     },
     radius () {
       return Math.min(this.width, this.height) / 2
@@ -60,7 +78,8 @@ export default {
     },
     arcTween (d, index, nodes) {
       let i = d3.interpolate(this.d3Local.get(nodes[index]), d)
-      this._current = i(0)
+      // Reset the new "old" angle here for the next transition
+      this.d3Local.set(nodes[index], d)
       return (t) => {
         return this.arc(i(t))
       }
@@ -69,25 +88,13 @@ export default {
     draw () {
       // data format is expected to be like `@/store/static/d3-models/pieChart`
 
-      console.log('drawing')
-
-      // Get percentage for each item
-      this.data.forEach((d) => {
-        d.percentage = Math.floor(d.value / this.total * 100)
-      })
-
       // join
       let arcs = this.canvas.selectAll('.arc')
-        .data(this.pie(this.data))
+        .data(this.pie(this.currentData.values), wedge => wedge.data.id)
 
       // update
       arcs.select('path')
-        .transition().duration(7500).attrTween('d', this.arcTween)
-      // arcs.select('text')
-      //   .transition().duration(7500)
-      //     .attr('transform', d => 'translate(' + this.label.centroid(d) + ')')
-      //     .attr('dy', '0.35em')
-      //     .text(d => d.data.percentage + '%')
+        .transition().duration(750).attrTween('d', this.arcTween)
 
       // enter
       arcs.enter()
@@ -101,6 +108,8 @@ export default {
           this.d3Local.set(nodes[i], d)
         })
 
+      // arcs.exit()
+
       // arcs.enter().append('text')
       //   .attr('transform', d => 'translate(' + this.label.centroid(d) + ')')
       //   .attr('dy', '0.35em')
@@ -112,7 +121,7 @@ export default {
     this.draw()
   },
   watch: {
-    data (newData, oldData) {
+    currentData (newData, oldData) {
       this.draw()
     }
   }
@@ -131,5 +140,8 @@ export default {
     stroke: #fff;
     stroke-width: 5px;
   }
+}
+.vis-svg {
+  max-width: 500px;
 }
 </style>

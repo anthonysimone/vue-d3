@@ -63,13 +63,11 @@ export default {
   methods: {
     updateData (data) {
       // Update data property on component
-      console.log('caught update event')
       this.visData = data
 
       // Update action
       this.$store.dispatch('visualization/updateVisualization', {
         id: this.id,
-        // updatedData: { data: JSON.stringify(data) },
         dataToUpdate: { data }
       })
     }
@@ -77,7 +75,7 @@ export default {
   created () {
     // Use mock data
     // let dataKey = this.visDisplayComponentName.charAt(0).toLowerCase() + this.visDisplayComponentName.slice(1) + 'Data'
-    // this.visData = testData[dataKey]
+    // this.visData = testData[dataKey].usableData
 
     // Use real data
     this.visData = this.visualization.data
