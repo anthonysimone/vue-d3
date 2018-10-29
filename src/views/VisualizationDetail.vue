@@ -10,7 +10,7 @@
       </section>
 
       <!-- Display Chart -->
-      <section class="section">
+      <section v-if="visData.length > 0" class="section">
         <h3 class="title is-h3">Display Visualization</h3>
         <component :is="visDisplayComponentName" :data="visData"></component>
       </section>
@@ -64,6 +64,9 @@ export default {
     updateData (data) {
       // Update data property on component
       this.visData = data
+
+      console.log(this.id)
+      console.log(data)
 
       // Update action
       this.$store.dispatch('visualization/updateVisualization', {

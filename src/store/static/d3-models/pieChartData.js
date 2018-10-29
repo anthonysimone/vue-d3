@@ -1,4 +1,5 @@
 export default {
+  initData: [],
   storedData: [
     {
       label: 'Apples',

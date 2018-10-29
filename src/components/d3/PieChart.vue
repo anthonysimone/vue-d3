@@ -4,8 +4,7 @@
       <div class="select-container">
         <div class="select" v-if="this.data.length > 1">
           <select class="select" v-model.number="currentIndex">
-            <option v-for="(set, index) in this.data"
-              :selected="index === 0"
+            <option v-for="set in this.data"
               :key="set.setId"
               :value="set.setId">
               {{ set.setName }}
@@ -36,14 +35,19 @@ export default {
       canvas: null,
       width: 500,
       height: 500,
-      currentIndex: 1,
+      currentIndex: (this.data.length > 0) ? this.data[0].setId : null,
       d3Local: d3.local()
     }
   },
   computed: {
     // TODO: account for uneven sets, OR make that a validation process in data entry
     currentData () {
-      return this.data[this.data.findIndex(item => item.setId === this.currentIndex)]
+      if (this.currentIndex) {
+        return this.data[this.data.findIndex(item => item.setId === this.currentIndex)]
+      } else {
+        return this.data[0]
+      }
+
       // let usableData = pieChartModel.transformToUsable(this.data);
       // return usableData[usableData.findIndex(item => item.setId === this.currentIndex)]
     },
@@ -124,6 +128,7 @@ export default {
     currentData (newData, oldData) {
       this.draw()
     }
+
   }
 }
 </script>

@@ -1,11 +1,14 @@
 <template>
   <div class="test-visualization-display">
     <div class="content">
-      <p>Edit your dataset for this Pie Chart Visualization below! Instructions TBD.</p>
+      <p>Edit your dataset for this Pie Chart Visualization below!</p>
+      <p>For simplicity sake, you can add new data groups and new data sets. Every data group <em><b>must</b></em> have valid data for every set. It is ok if the value is 0.</p>
+      <p>Start a new pie chart by adding your first data set. Then add at least one data group. If you add multiple datasets, you will be able to transition between them</p>
     </div>
-    <p>For simplicity sake, you can add new data groups and new data sets. Every data group <em><b>must</b></em> have valid data for every set. It is ok if the value is 0.</p>
     <div class="buttons">
-      <button class="button is-primary is-small" @click.prevent="$modal.show('add-new-group')">Add New Data Group</button>
+      <button class="button is-primary is-small"
+        @click.prevent="$modal.show('add-new-group')"
+        :disabled="editData.length === 0">Add New Data Group</button>
       <button class="button is-primary is-small" @click.prevent="$modal.show('add-new-set')">Add New Data Set</button>
     </div>
     <div>
@@ -172,17 +175,28 @@ export default {
     },
     addSet () {
       if (this.validateSet()) {
-        console.log('valid, set added')
-        let ids = this.editData.map(set => set.setId)
-        let newId = Math.max(...ids) + 1
-        let newSet = JSON.parse(JSON.stringify(this.editData[0]))
+        let newSet, newId
+        if (this.editData.length === 0) {
+          newId = 1
+        } else {
+          let ids = this.editData.map(set => set.setId)
+          newId = Math.max(...ids) + 1
+        }
+        if (this.editData.length > 0) {
+          newSet = JSON.parse(JSON.stringify(this.editData[0]))
+          newSet.values.forEach(group => {
+            group.value = 0
+          })
+        } else {
+          newSet = {
+            values: []
+          }
+        }
         newSet.isNew = true
         newSet.setName = this.newSet.name
         newSet.setId = newId
         newSet.total = 0
-        newSet.values.forEach(group => {
-          group.value = 0
-        })
+
         this.editData.push(newSet)
         this.$modal.hide('add-new-set')
         this.hasBeenEdited = true
@@ -234,17 +248,15 @@ export default {
           let set = this.editData[i]
           if (set.hasOwnProperty('isNew')) {
             delete set.isNew
-            console.log('delete is new')
           }
           for (let j = 0; j < set.values.length; j++) {
             let group = set.values[j]
             if (group.hasOwnProperty('isNew')) {
               delete group.isNew
-              console.log('delete is new')
             }
           }
         }
-
+        console.log(this.editData)
         this.$emit('dataUpdated', this.editData)
       }
     },

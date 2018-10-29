@@ -19,7 +19,7 @@
                 <select class="select" v-model="newVisualization.type" name="newVisualizationType">
                   <option value="test">Test</option>
                   <option value="pie">Pie Chart</option>
-                  <option value="line">Line Graph</option>
+                  <!-- <option value="line">Line Graph</option> -->
                 </select>
               </div>
             </div>
