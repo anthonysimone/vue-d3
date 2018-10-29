@@ -23,6 +23,7 @@
           <label class="label" for="currentId">ID</label>
           <div class="control">
             <input type="text" class="input" required v-model="current.id" name="currentId" id="currentId">
+            <p class="help is-danger" v-show="!validation.id">IDs must be alphanumeric (hyphens and underscores are allow).</p>
           </div>
         </div>
 
@@ -38,6 +39,7 @@
           <label class="label" for="currentValue">Value</label>
           <div class="control">
             <input type="text" class="input" required v-model="current.value" name="currentValue" id="currentValue">
+            <p class="help is-danger" v-show="!validation.value">The value must be a number.</p>
           </div>
         </div>
 
@@ -98,10 +100,26 @@ export default {
 
       let hexPattern = /^#+([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/
       let alphaPattern = /^[a-z]+$/
+      let slugPattern = /^[a-z0-9\-_]+$/
+      let numberPattern = /^\d+$/
       if (hexPattern.test(this.current.color) || alphaPattern.test(this.current.color)) {
         this.validation.color = true
       } else {
         this.validation.color = false
+        valid = false
+      }
+
+      if (slugPattern.test(this.current.id)) {
+        this.validation.id = true
+      } else {
+        this.validation.id = false
+        valid = false
+      }
+
+      if (numberPattern.test(this.current.value)) {
+        this.validation.value = true
+      } else {
+        this.validation.value = false
         valid = false
       }
 
@@ -131,6 +149,9 @@ export default {
     cancelUpdate () {
       // reset
       this.resetValues()
+      for (let prop in this.validation) {
+        this.validation[prop] = true
+      }
       // close
       this.isBeingEdited = false
       this.$emit('changeEditingState', false)

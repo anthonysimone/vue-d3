@@ -143,7 +143,7 @@ export default {
   }
   path {
     stroke: #fff;
-    stroke-width: 5px;
+    stroke-width: 3px;
   }
 }
 .vis-svg {

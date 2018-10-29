@@ -256,7 +256,7 @@ export default {
             }
           }
         }
-        console.log(this.editData)
+        this.hasBeenEdited = false
         this.$emit('dataUpdated', this.editData)
       }
     },
