@@ -1,7 +1,7 @@
 import Visualizations from '@/firebase/firestore/Visualizations'
 
 const state = {
-  visualizationsByUser: null
+  visualizationsByUser: []
 }
 
 const getters = {
