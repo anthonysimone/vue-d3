@@ -3,7 +3,6 @@
     <div class="card-content">
       <h4 class="title is-5">{{ visualization.name }}</h4>
       <p>Visualization of type: {{ visualization.type }}</p>
-      <!-- <p>Data: {{ visualization.data }}</p> -->
       <p>id: {{ visualization.id }}</p>
       <router-link class="button is-primary is-small" :to="{name: 'visualization-detail', params: {id: visualization.id}}">View</router-link>
       <confirmation-modal @confirmationSuccess="deleteVisualization(visualization.id)" dialog-title="Warning!" :dialog-body="dialogWarningBody" classes="delete">Delete</confirmation-modal>

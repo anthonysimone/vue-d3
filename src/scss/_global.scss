@@ -4,4 +4,61 @@
 
 .max-4 {
   min-width: 25%;
+  max-width: 300px;
+}
+
+svg {
+  display: block;
+}
+
+.visually-hidden-label {
+  position: relative;
+  label {
+    position: absolute;
+    left: 5px;
+    top: 5px;
+    z-index: -1;
+    font-size: 5px;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.button.save.is-icon {
+  color: $success;
+  border: none;
+  transition: background-color 200ms ease;
+  &:hover {
+    background-color: lighten($success, 40%);
+  }
+}
+
+.button.cancel.is-icon {
+  border: none;
+  transition: background-color 200ms ease;
+  &:hover {
+    background-color: lighten($body-font-color, 60%);
+  }
+}
+
+.button.edit.is-icon {
+  color: $info;
+  border: none;
+  transition: background-color 200ms ease;
+  &:hover {
+    background-color: lighten($info, 40%);
+  }
+}
+
+.button.trash.is-icon {
+  color: $danger;
+  border: none;
+  transition: background-color 200ms ease;
+  &:hover {
+    background-color: lighten($danger, 30%);
+  }
+}
+
+.is-being-edited {
+  background-color: rgba($danger, 0.1);
 }

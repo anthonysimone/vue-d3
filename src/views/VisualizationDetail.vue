@@ -4,13 +4,13 @@
     <div class="container">
 
       <!-- Edit Chart -->
-      <section class="section">
+      <section class="section edit-vis">
         <h3 class="title is-h3">Edit Visualization</h3>
         <component :is="visEditComponentName" :data="visData" @dataUpdated="updateData"></component>
       </section>
 
       <!-- Display Chart -->
-      <section v-if="visData.length > 0" class="section">
+      <section v-if="visData.length > 0" class="section display-vis">
         <h3 class="title is-h3">Display Visualization</h3>
         <component :is="visDisplayComponentName" :data="visData"></component>
       </section>
@@ -26,10 +26,10 @@ import visTypes from '@/store/static/visualizationTypes'
 // import testData from '@/store/static/d3-models/allDataModels'
 
 // Import all possible D3 display and edit templates
-import TestVisualization from '@/components/d3/TestVisualization'
-import EditTestVisualization from '@/components/d3/EditTestVisualization'
-import PieChart from '@/components/d3/PieChart'
-import EditPieChart from '@/components/d3/EditPieChart'
+import TestVisualization from '@/components/d3/testViz/TestVisualization'
+import EditTestVisualization from '@/components/d3/testViz/EditTestVisualization'
+import PieChart from '@/components/d3/pieChart/PieChart'
+import EditPieChart from '@/components/d3/pieChart/EditPieChart'
 
 export default {
   components: {
@@ -63,10 +63,7 @@ export default {
   methods: {
     updateData (data) {
       // Update data property on component
-      this.visData = data
-
-      console.log(this.id)
-      console.log(data)
+      this.visData = JSON.parse(JSON.stringify(data))
 
       // Update action
       this.$store.dispatch('visualization/updateVisualization', {
@@ -85,3 +82,7 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+
+</style>
