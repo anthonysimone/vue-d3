@@ -18,7 +18,7 @@
             <div id="navbarMenuHeroA" :class="{ 'navbar-menu': true, 'is-active' : menuIsActive }">
               <div class="navbar-end">
                 <router-link v-if="!isLogged" class="navbar-item" :to="{ name: 'sign-in'}">Sign In</router-link>
-                <div v-if="isLogged" :class="['navbar-item dropdown', 'is-right', {'is-active' : dropdownIsActive}]">
+                <div v-if="isLogged" :class="['navbar-item dropdown', 'is-right', {'is-active' : dropdownIsActive}]" v-on-clickaway="closeDropdown">
                   <div class="dropdown-trigger">
                     <button class="button is-inverted" @click="toggleDropdown" aria-haspopup="true" aria-controls="dropdown-menu">
                       <span class="icon is-small tiny-button-avatar" :style="{backgroundImage: 'url('+userProfile.photoUrl+')' }"></span>
@@ -57,9 +57,14 @@
 
 <script>
 import { mapGetters } from 'vuex'
+// import { mixin as clickaway } from 'vue-clickaway';
+import { directive as onClickaway } from 'vue-clickaway'
 import auth from '@/firebase/auth/index'
 
 export default {
+  directives: {
+    onClickaway
+  },
   data () {
     return {
       // user: this.$store.state.user,
@@ -79,6 +84,9 @@ export default {
     },
     toggleDropdown () {
       this.dropdownIsActive = !this.dropdownIsActive
+    },
+    closeDropdown () {
+      this.dropdownIsActive = false
     }
   }
 }
